@@ -20,7 +20,7 @@ params = {
         min=0.1, max=0.6, default=0.35, step=0.05, name="bulge_re"
     ),
     "Sersic index": dict(min=0.5, max=6.0, default=3.25, step=0.25, name="bulge_n"),
-    "Elipticity": dict(min=0.2, max=1.0, default=0.6, step=0.1, name="gal_q"),
+    "Ellipticity": dict(min=0.2, max=1.0, default=0.6, step=0.1, name="gal_q"),
     "Orientation (in radians)": dict(
         min=0.0, max=3.14, default=3.14 / 2, step=0.1, name="gal_beta"
     ),
