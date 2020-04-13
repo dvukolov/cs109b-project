@@ -2,6 +2,7 @@ import copy
 import galsim
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import streamlit as st
 
 # Fixed parameters
@@ -20,7 +21,7 @@ params = {
         min=0.1, max=0.6, default=0.35, step=0.05, name="bulge_re"
     ),
     "Sersic index": dict(min=0.5, max=6.0, default=3.25, step=0.25, name="bulge_n"),
-    "Ellipticity": dict(min=0.2, max=1.0, default=0.6, step=0.1, name="gal_q"),
+    "Ellipticity": dict(min=0.1976, max=1.0, default=0.6, step=0.1, name="gal_q"),
     "Orientation (in radians)": dict(
         min=0.0, max=3.14, default=3.14 / 2, step=0.1, name="gal_beta"
     ),
@@ -75,10 +76,10 @@ def generate_image(psf_re, bulge_re, bulge_n, gal_q, gal_beta, noise, gal_flux):
 
 
 def draw_images(outcome):
-    images = outcome["noised"], outcome["noiseless"], outcome["psf"]
-    titles = ["Noise Image", "Noiseless Image", "PSF"]
+    images = outcome["noiseless"], outcome["noised"], outcome["psf"]
+    titles = ["Noiseless Image", "Noisy Image", "Point Spread Function"]
 
-    fig, axes = plt.subplots(1, 3, figsize=(8, 4), constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=(8, 3.5), dpi=200, constrained_layout=True)
     for image, title, ax in zip(images, titles, axes):
         ax.imshow(image)
         ax.axis("off")
@@ -86,30 +87,54 @@ def draw_images(outcome):
 
     fig.canvas.draw()
 
-    # Now we can save it to a numpy array.
+    # Save the image to a NumPy array
     data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
     data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
     return data
 
 
 def main():
-    st.title("EDA of Simulated Galaxies")
+    st.title("Galaxy Image Simulation")
+    st.markdown("## Introduction")
+    st.markdown(
+        "The purpose of this app is to show the relationship between the inputs "
+        "of the parameteric generative model and the resulting simulated images of "
+        "galaxies. Change the settings in the sidebar to see their effect."
+    )
+
     st.sidebar.title("Parameters")
 
+    sliders = {}
     settings = {}
     for description, param in params.items():
-        settings[param["name"]] = st.sidebar.slider(
-            description, param["min"], param["max"], param["default"], param["step"]
+        var = param["name"]
+        sliders[var] = st.sidebar.empty()
+        settings[var] = sliders[var].slider(
+            description, param["min"], param["max"], param["default"], param["step"],
         )
 
     outcome = generate_image(**settings)
 
     images = draw_images(outcome)
-    st.image(images)
-    st.write(
-        f"Signal-to-Noise Ratio: {outcome['snr']:.2f}; g1: {outcome['g1']:.4f}, g2: {outcome['g2']:.4f}"
+    st.image(images, use_column_width=True)
+
+    stats = pd.DataFrame(
+        {
+            "Signal-to-Noise Ratio": outcome["snr"],
+            "g1": outcome["g1"],
+            "g2": outcome["g2"],
+        },
+        index=["Computed Quantities"],
     )
-    st.write(settings)
+    st.table(stats)
+
+    st.write("## Source Code")
+    st.info(
+        "The code for the app is available at the "
+        "[GitHub repo](https://github.com/dvukolov/cs109b-project). "
+        "Image generation is based on the sample code provided by the module leader "
+        "and is performed by [GalSim](https://github.com/GalSim-developers/GalSim)."
+    )
 
 
 if __name__ == "__main__":
