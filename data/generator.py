@@ -62,13 +62,13 @@ def generate_sample(args):
 
     # Loop until a sample satisfies all criteria
     while True:
-        # Increment the global iteration counter
-        with counter.get_lock():
-            counter.value += 1
 
-        # Initialize the random number generators
-        random.seed(random_seed + counter.value)
-        rng = galsim.BaseDeviate(random_seed + counter.value + 1)
+        with counter.get_lock():
+            # Increment the global iteration counter
+            counter.value += 1
+            # Initialize the random number generators
+            random.seed(random_seed + counter.value)
+            rng = galsim.BaseDeviate(random_seed + counter.value + 1)
 
         # SF moffat scale radius in arcsec: fixed vs random
         psf_re = random.uniform(0.5, 1) if psf_re is None else psf_re
@@ -195,7 +195,7 @@ def main(filename, size, sersics, psf, noise):
         _ = list(tqdm(pool.imap(generate_sample, args), total=size, smoothing=0.01))
 
     print(f"Filtered out {counter.value - size:,} images")
-    print("Saving the data")
+    print(f"Saving the data to {filename}")
 
     # Concatenate the labels: "Flux", "Sersic Index", "Sersic Radius", "g1", "g2"
     label = np.stack(
