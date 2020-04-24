@@ -194,8 +194,8 @@ def main(filename, size, sersics, psf, noise):
     with Pool(n_cores) as pool:
         _ = list(tqdm(pool.imap(generate_sample, args), total=size, smoothing=0.01))
 
-    print(f"Filtered out {counter.value - size:,} images")
-    print(f"Saving the data to {filename}")
+    print(f"Filtered out {counter.value - size:,} images based on extreme SNR")
+    print(f"Saving the data to {filename!r}")
 
     # Concatenate the labels: "Flux", "Sersic Index", "Sersic Radius", "g1", "g2"
     label = np.stack(
