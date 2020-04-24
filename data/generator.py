@@ -177,9 +177,8 @@ def main(filename, size, sersics, psf, noise):
     noise_list = [noise] * size
     args = zip(i, sersic_index, psf_list, noise_list)
 
-    # Generate the images
+    # Show configuration
     n_cores = psutil.cpu_count(logical=False)
-
     print("Generating galaxy images with the following parameters:")
     print("    Number of samples:", f"{size:,}")
     print(
@@ -191,6 +190,7 @@ def main(filename, size, sersics, psf, noise):
     print("    Signal-to-Noise Ratio: [10, 100]")
     print("    Number of CPU cores:", n_cores)
 
+    # Generate the images
     with Pool(n_cores) as pool:
         _ = list(tqdm(pool.imap(generate_sample, args), total=size, smoothing=0.01))
 
