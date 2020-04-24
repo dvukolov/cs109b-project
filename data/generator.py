@@ -181,10 +181,10 @@ def main(filename, size, sersics, psf, noise):
     n_cores = psutil.cpu_count(logical=False)
 
     print("Generating galaxy images with the following parameters:")
-    print("    Number of samples:", size)
+    print("    Number of samples:", f"{size:,}")
     print(
         "    Sersic Indices:",
-        "continuous random" if sersics is None else f"{sersics} discrete",
+        "continuous random" if sersics is None else f"{sersics:,} discrete",
     )
     print("    PSF:", "random" if psf is None else psf)
     print("    Gaussian noise level:", "random" if noise is None else noise)
