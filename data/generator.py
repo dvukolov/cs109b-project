@@ -184,10 +184,10 @@ def main(filename, size, sersics, psf, noise):
     print("    Number of samples:", f"{size:,}")
     print(
         "    Sersic Indices:",
-        "continuous random" if sersics is None else f"{sersics:,} discrete",
+        "random [0.5, 6.0]" if sersics is None else f"{sersics:,} discrete [0.5, 6.0]",
     )
-    print("    PSF:", "random" if psf is None else psf)
-    print("    Gaussian noise level:", "random" if noise is None else noise)
+    print("    PSF:", "random [0.5, 1.0]" if psf is None else psf)
+    print("    Gaussian noise level:", "random [200, 400]" if noise is None else noise)
     print("    Signal-to-Noise Ratio: [10, 100]")
     print("    Number of CPU cores:", n_cores)
 
