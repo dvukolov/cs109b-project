@@ -26,6 +26,11 @@ counter = Value("i", 0)
 
 
 def allocate_memory(size):
+    """Create global NumPy arrays which are shared between processes
+
+    Args:
+        size: the number of samples to generate
+    """
     data_raw["img"] = RawArray(ctypes.c_float, size * image_size ** 2)
     data_raw["img_nonoise"] = RawArray(ctypes.c_float, size * image_size ** 2)
     # Optional: the PSF image
@@ -134,6 +139,45 @@ def generate_sample(args):
     data["g_2"][i] = g_2
 
 
+def initialize_sersics(sersics, size):
+    """Return either equally spaces discrete Sersic indices or None's
+
+    Args:
+        sersics: command line arguments for the number of discrete Sersic indices
+        size: the number of samples to generate
+
+    Returns:
+        sersic_index: a vector of discrete Sersic indices or None's
+    """
+    # Define the Sersic indices
+    if sersics is None:
+        # Use random continuous Sersic indices
+        sersic_index = [None] * size
+    else:
+        # Use a limited set of equally spaced Sersic indices
+        assert size % sersics == 0
+        sersic_index = np.linspace(0.5, 6, num=sersics)
+        sersic_index = np.tile(sersic_index, size // sersics)
+        np.random.seed(random_seed)
+        np.random.shuffle(sersic_index)
+    return sersic_index
+
+
+def print_configuration(size, sersics, psf, noise, n_cores):
+    """Show the currently used configuration.
+    """
+    print("Generating galaxy images with the following parameters:")
+    print("    Number of samples:", f"{size:,}")
+    print(
+        "    Sersic indices:",
+        "random [0.5, 6.0]" if sersics is None else f"{sersics:,} discrete [0.5, 6.0]",
+    )
+    print("    PSF:", "random [0.5, 1.0]" if psf is None else psf)
+    print("    Gaussian noise level:", "random [200, 400]" if noise is None else noise)
+    print("    Signal-to-Noise Ratio: [10, 100]")
+    print("    Number of CPU cores:", n_cores)
+
+
 @click.command()
 @click.argument("filename")
 @click.option("--size", default=10_000, help="Number of samples", show_default=True)
@@ -159,36 +203,16 @@ def main(filename, size, sersics, psf, noise):
     # Allocate shared arrays
     allocate_memory(size)
 
-    # Define the Sersic indices
-    if sersics is None:
-        # Use random continuous Sersic indices
-        sersic_index = [None] * size
-    else:
-        # Use a limited set of equally spaced Sersic indices
-        assert size % sersics == 0
-        sersic_index = np.linspace(0.5, 6, num=sersics)
-        sersic_index = np.tile(sersic_index, size // sersics)
-        np.random.seed(random_seed)
-        np.random.shuffle(sersic_index)
-
     # Prepare the arguments
     i = np.arange(size)
+    sersic_index = initialize_sersics(sersics, size)
     psf_list = [psf] * size
     noise_list = [noise] * size
     args = zip(i, sersic_index, psf_list, noise_list)
 
     # Show configuration
     n_cores = psutil.cpu_count(logical=False)
-    print("Generating galaxy images with the following parameters:")
-    print("    Number of samples:", f"{size:,}")
-    print(
-        "    Sersic Indices:",
-        "random [0.5, 6.0]" if sersics is None else f"{sersics:,} discrete [0.5, 6.0]",
-    )
-    print("    PSF:", "random [0.5, 1.0]" if psf is None else psf)
-    print("    Gaussian noise level:", "random [200, 400]" if noise is None else noise)
-    print("    Signal-to-Noise Ratio: [10, 100]")
-    print("    Number of CPU cores:", n_cores)
+    print_configuration(size, sersics, psf, noise, n_cores)
 
     # Generate the images
     with Pool(n_cores) as pool:
