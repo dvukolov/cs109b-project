@@ -227,10 +227,6 @@ def main(filename, size, sersics, psf, noise):
         axis=1,
     )
 
-    # Create a train-test split, with a training set size of 90%
-    train_test = np.zeros(size, dtype=bool)
-    train_test[: int(size * 0.9)] = True
-
     # Save the data
     np.savez(
         filename,
@@ -240,7 +236,6 @@ def main(filename, size, sersics, psf, noise):
         psf_r=data["psf_r"],
         snr=data["snr"],
         sigma=data["sigma"],
-        train_test=train_test,
     )
     print("Done")
 
