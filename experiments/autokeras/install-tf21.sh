@@ -10,12 +10,12 @@ python -m ipykernel install --user --name tf21 --display-name "Python (TF2.1)"
 # jupyter kernelspec list
 
 # General dependencies
-conda install -c anaconda matplotlib numpy pandas scikit-learn seaborn tensorflow-gpu tqdm
-conda install -c conda-forge ipywidgets
+conda install -c anaconda ipywidgets matplotlib numpy pandas scikit-learn seaborn tensorflow-gpu tqdm
+pip install tensorflow-addons
 
 # Autokeras-specific dependencies
-conda install -c anaconda packaging pyparsing pytz keras-tuner typeguard
-pip install autokeras tensorflow-addons
+conda install -c conda-forge packaging pyparsing pytz keras-tuner typeguard
+pip install autokeras
 
 # To remove the environment run:
 # conda remove --name tf21 --all
