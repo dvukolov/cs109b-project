@@ -106,22 +106,22 @@ def generate_sample(args):
         final = galsim.Convolve([psf, gal])
         image = galsim.ImageF(image_size, image_size, scale=pixel_scale)
         final.drawImage(image=image)
-        image_nonoise = copy.deepcopy(image.array)
 
         # signal to noise ratio
         snr = np.sqrt((image.array ** 2).sum()) / noise
 
-        image.addNoise(galsim.PoissonNoise(rng, sky_level=0.0))
-        # noise map for bkgr gaussian noise
-        image.addNoise(galsim.GaussianNoise(rng, sigma=noise))
-
-        # Optionally: generate a PSF image
-        # psf_image = galsim.ImageF(image_size, image_size, scale=pixel_scale)
-        # psf.drawImage(image=psf_image)
-
         # After generating the data, preserve only that with SNR [10, 100]
         if 10 <= snr <= 100:
             break
+
+    image_nonoise = copy.deepcopy(image.array)
+    image.addNoise(galsim.PoissonNoise(rng, sky_level=0.0))
+    # noise map for bkgr gaussian noise
+    image.addNoise(galsim.GaussianNoise(rng, sigma=noise))
+
+    # Optionally: generate a PSF image
+    # psf_image = galsim.ImageF(image_size, image_size, scale=pixel_scale)
+    # psf.drawImage(image=psf_image)
 
     data["img"][i] = image.array  # final noised image
     data["img_nonoise"][i] = image_nonoise  # noiseless image
