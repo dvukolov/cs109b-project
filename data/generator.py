@@ -175,6 +175,7 @@ def print_configuration(size, sersics, psf, noise, n_cores):
     print("    PSF:", "random [0.5, 1.0]" if psf is None else psf)
     print("    Gaussian noise level:", "random [200, 400]" if noise is None else noise)
     print("    Signal-to-Noise Ratio: [10, 100]")
+    print(f"    Starting Random Seed: {random_seed:,}")
     print("    Number of CPU cores:", n_cores)
 
 
@@ -199,7 +200,18 @@ def print_configuration(size, sersics, psf, noise, n_cores):
     type=click.FloatRange(min=200, max=400),
     help="Gaussian noise level between 200 and 400 [default: random]",
 )
-def main(filename, size, sersics, psf, noise):
+@click.option(
+    "--seed",
+    default=random_seed,
+    show_default=True,
+    type=click.IntRange(min=0),
+    help="Starting value of the random seed",
+)
+def main(filename, size, sersics, psf, noise, seed):
+    # Set the starting random seed
+    global random_seed
+    random_seed = seed
+
     # Allocate shared arrays
     allocate_memory(size)
 
