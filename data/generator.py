@@ -163,7 +163,7 @@ def initialize_sersics(sersics, size):
     return sersic_index
 
 
-def print_configuration(size, sersics, psf, noise, n_cores):
+def print_configuration(size, sersics, psf, noise, n_jobs):
     """Show the currently used configuration.
     """
     print("Generating galaxy images with the following parameters:")
@@ -174,9 +174,9 @@ def print_configuration(size, sersics, psf, noise, n_cores):
     )
     print("    PSF:", "random [0.5, 1.0]" if psf is None else psf)
     print("    Gaussian noise level:", "random [200, 400]" if noise is None else noise)
-    print("    Signal-to-Noise Ratio: [10, 100]")
-    print(f"    Starting Random Seed: {random_seed:,}")
-    print("    Number of CPU cores:", n_cores)
+    print("    Signal-to-noise ratio: [10, 100]")
+    print(f"    Starting random seed: {random_seed:,}")
+    print("    Number of parallel jobs:", n_jobs)
 
 
 @click.command()
@@ -207,7 +207,13 @@ def print_configuration(size, sersics, psf, noise, n_cores):
     type=click.IntRange(min=0),
     help="Starting value of the random seed",
 )
-def main(filename, size, sersics, psf, noise, seed):
+@click.option(
+    "--jobs",
+    default=None,
+    type=click.IntRange(min=1),
+    help="Number of parallel processes to run [default: number of CPU cores]",
+)
+def main(filename, size, sersics, psf, noise, seed, jobs):
     # Set the starting random seed
     global random_seed
     random_seed = seed
@@ -222,12 +228,13 @@ def main(filename, size, sersics, psf, noise, seed):
     noise_list = [noise] * size
     args = zip(i, sersic_index, psf_list, noise_list)
 
+    # Unless specified, set the number of jobs to the number of CPU cores
+    n_jobs = psutil.cpu_count(logical=False) if jobs is None else jobs
     # Show configuration
-    n_cores = psutil.cpu_count(logical=False)
-    print_configuration(size, sersics, psf, noise, n_cores)
+    print_configuration(size, sersics, psf, noise, n_jobs)
 
     # Generate the images
-    with Pool(n_cores) as pool:
+    with Pool(n_jobs) as pool:
         _ = list(tqdm(pool.imap(generate_sample, args), total=size, smoothing=0.01))
 
     print(f"Filtered out {counter.value - size:,} images based on extreme SNR")
