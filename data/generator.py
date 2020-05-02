@@ -63,7 +63,6 @@ def generate_sample(args):
     """
     # Unpack the arguments
     i, sersic_index, psf_re, noise = args
-    global counter
 
     # Loop until a sample satisfies all criteria
     while True:
