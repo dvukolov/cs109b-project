@@ -258,6 +258,7 @@ def main(filename, size, sersics, psf, noise, seed, jobs):
         img_nonoise=data["img_nonoise"],
         label=label,
         psf_r=data["psf_r"],
+        psf_img=data["psf_img"],
         snr=data["snr"],
         sigma=data["sigma"],
     )
