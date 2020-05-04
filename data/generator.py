@@ -25,7 +25,7 @@ data_raw, data = {}, {}
 counter = Value("i", 0)
 
 
-def allocate_memory(size):
+def allocate_memory(size, n_psf):
     """Create global NumPy arrays which are shared between processes
 
     Args:
@@ -33,8 +33,7 @@ def allocate_memory(size):
     """
     data_raw["img"] = RawArray(ctypes.c_float, size * image_size ** 2)
     data_raw["img_nonoise"] = RawArray(ctypes.c_float, size * image_size ** 2)
-    # Optional: the PSF image
-    # data_raw["psf_img"] = RawArray(ctypes.c_float, size * image_size ** 2)
+    data_raw["psf_img"] = RawArray(ctypes.c_float, n_psf * image_size ** 2)
     data_raw["gal_flux"] = RawArray(ctypes.c_float, size)
     data_raw["bulge_n"] = RawArray(ctypes.c_float, size)
     data_raw["bulge_re"] = RawArray(ctypes.c_float, size)
@@ -50,6 +49,8 @@ def allocate_memory(size):
         data[name] = np.ctypeslib.as_array(raw_array)
         if name in ["img", "img_nonoise"]:
             data[name] = data[name].reshape(size, image_size, image_size)
+        if name in ["psf_img"]:
+            data[name] = data[name].reshape(n_psf, image_size, image_size)
 
 
 def generate_sample(args):
@@ -75,7 +76,11 @@ def generate_sample(args):
             rng = galsim.BaseDeviate(random_seed + counter.value + 1)
 
         # SF moffat scale radius in arcsec: fixed vs random
-        psf_re = random.uniform(0.5, 1) if psf_re is None else psf_re
+        if psf_re is None:
+            psf_re = random.uniform(0.5, 1)
+            random_psf = True
+        else:
+            random_psf = False
 
         # Gaussian noise level: fixed vs random
         noise = random.randint(200, 400) if noise is None else noise
@@ -119,13 +124,13 @@ def generate_sample(args):
     image.addNoise(galsim.GaussianNoise(rng, sigma=noise))
 
     # Optionally: generate a PSF image
-    # psf_image = galsim.ImageF(image_size, image_size, scale=pixel_scale)
-    # psf.drawImage(image=psf_image)
+    if i == 0 or random_psf:
+        psf_image = galsim.ImageF(image_size, image_size, scale=pixel_scale)
+        psf.drawImage(image=psf_image)
+        data["psf_img"][i] = psf_image.array
 
     data["img"][i] = image.array  # final noised image
     data["img_nonoise"][i] = image_nonoise  # noiseless image
-    # Optionally: save the PSF image
-    # data['psf_img'][i] = psf_image.array
     data["gal_flux"][i] = gal_flux
     data["bulge_re"][i] = bulge_re
     data["bulge_n"][i] = bulge_n
@@ -218,7 +223,8 @@ def main(filename, size, sersics, psf, noise, seed, jobs):
     random_seed = seed
 
     # Allocate shared arrays
-    allocate_memory(size)
+    n_psf = size if psf is None else 1
+    allocate_memory(size, n_psf)
 
     # Prepare the arguments
     i = np.arange(size)
@@ -252,6 +258,7 @@ def main(filename, size, sersics, psf, noise, seed, jobs):
         img_nonoise=data["img_nonoise"],
         label=label,
         psf_r=data["psf_r"],
+        psf_img=data["psf_img"],
         snr=data["snr"],
         sigma=data["sigma"],
     )
