@@ -13241,9 +13241,9 @@ a.anchor-link {
 <ol>
 <li><strong>Sérsic profile:</strong> Define a galaxy's Sérsic profile parametrized by the Sérsic index and the radius that encloses a half of the total flux</li>
 <li><strong>Flux &amp; shear:</strong> Add flux and shear (defined by ellipticity and orientation) to complete the galaxy definition</li>
-<li><strong>PSF:</strong> We convolve the galaxy profile with the Point Spread Function, which is determined by the telescope optics and the atmosphere (for ground-based telescopes).</li>
-<li><strong>Noise:</strong> We then add Poisson noise (e.g. detected photoelectrons) and Gaussian noise (e.g. read noise) to the generated the image</li>
-<li><strong>Signal-to-noise ratio:</strong> We compute the signal-to-noise ratio (SNR) based on the pixel values and the noise level (assuming faint galaxies):
+<li><strong>PSF:</strong> Convolve the galaxy profile with the Point Spread Function, which is determined by the telescope optics and the atmosphere (for ground-based telescopes).</li>
+<li><strong>Noise:</strong> Add Poisson noise (e.g. detected photoelectrons) and Gaussian noise (e.g. read noise) to the generated the image</li>
+<li><strong>Signal-to-noise ratio:</strong> Compute the signal-to-noise ratio (SNR) based on the pixel values and the noise level (assuming faint galaxies):
 $$
 SNR = \frac{1}{\sigma_p} \sqrt{\sum p_i^2}
 $$
@@ -13290,7 +13290,7 @@ We preserve only the images with SNR between 10 and 100.</li>
 </tr>
 </tbody>
 </table>
-<p>We generate 200,000 observation in total, using 180,000 samples for training and 20,000 for validation. 
+<p>We simulate 200,000 observation in total, using 180,000 samples for training and 20,000 for validation. 
 <br><br></p>
 <p><strong>Target variables:</strong> We estimate the following five parameters from image data:</p>
 <ul>
@@ -13314,7 +13314,7 @@ We preserve only the images with SNR between 10 and 100.</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Exploratory-Data-Analysis-(cont.)">Exploratory Data Analysis (cont.)<a class="anchor-link" href="#Exploratory-Data-Analysis-(cont.)">&#182;</a></h1><p><strong>Analysis of labels:</strong> We also study the distributions of the target variables. These differ for the three datasets and depend not only on the way we randomly sample the parameters, but also on the filtering signal-to-noise criterion. The scales of the parameters vary significantly:</p>
+<h1 id="Exploratory-Data-Analysis-(cont.)">Exploratory Data Analysis (cont.)<a class="anchor-link" href="#Exploratory-Data-Analysis-(cont.)">&#182;</a></h1><p><strong>Analysis of labels:</strong> We also study the distributions of the target variables. These differ for the three datasets due to the way we set or randomly sample the parameters and filter out observations based on the signal-to-noise ratio. The <strong>scales</strong> of the parameters vary significantly:</p>
 
 </div>
 </div>
@@ -17480,7 +17480,7 @@ L 701.27375 253.678125
 <h1 id="Exploratory-Data-Analysis:-Findings">Exploratory Data Analysis: Findings<a class="anchor-link" href="#Exploratory-Data-Analysis:-Findings">&#182;</a></h1><p>The knowledge of the data-generating procedure, together with the study of the relationship between the parameters and the resulting galaxy images informed our subsequent model building as follows:</p>
 <ul>
 <li>The <strong>PSF</strong> and the <strong>noise</strong> levels have a significant effect on the obtained images, and should be taken into account for datasets where those parameters vary.</li>
-<li>To understand how dramatic that effect is, we chose to establish an <strong>upper bound</strong> on model performance by training on the noiseless images first and proceeding to noisy inputs after.</li>
+<li>To understand how dramatic that effect is, we chose to establish an <strong>upper bound</strong> on model performance by training on the noiseless images first and proceeding to noisy inputs thereafter.</li>
 </ul>
 
 </div>
@@ -18064,11 +18064,9 @@ z
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Exploratory-Data-Analysis:-Findings-(cont.)">Exploratory Data Analysis: Findings (cont.)<a class="anchor-link" href="#Exploratory-Data-Analysis:-Findings-(cont.)">&#182;</a></h1><ul>
-<li>The <strong>Sérsic index</strong>, that defines how peaky the light is concentrated in the center, is very difficult to distinguish from the images. Based on these observations and the discussions with the project leaders we expect this parameter to be very difficult to estimate.</li>
+<li>The <strong>Sérsic index</strong>, that defines how peaky the light is concentrated in the center, is very difficult to distinguish from the images. Based on these observations and the discussions with the project leaders we expect this parameter to be very difficult to estimate. This becomes our most important parameter when doing model selection.</li>
 <li>The <strong>target variables</strong> might need to be rescaled before running a regression model, such that the loss is not driven by the variables with the largest magnitude. Alternatively, the losses for each predicted quantity might need to be weighted.</li>
 <li>The <strong>simulated images</strong> form a perfect dataset, free of outliers and irregularities, with underlying deterministic relationships between a handful of parameters. Smaller neural networks might be capable of capturing the non-linear dependencies in the data, and regularization might turn out to be optional.</li>
-<li>Some of the <strong>parameter combinations</strong> might be more ambiguous and difficult for the model to untangle. For instance, it's hard to say if we're observing a smaller object with a larger PSF or vice versa. An ideal model should incorporate and report the associated uncertainty.</li>
-<li>(optional) It appears that the majority of information is contained in the center of each images. The use of <strong>attention</strong> in network architecture could be investigated.</li>
 </ul>
 
 </div>
@@ -18078,41 +18076,12 @@ z
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Model-Building">Model Building<a class="anchor-link" href="#Model-Building">&#182;</a></h1><p>In our model building we used multiple approaches:</p>
-<ul>
-<li>Manual experimentation with different network architectures</li>
-<li>Automatic neural architecture search</li>
-<li>Grid search of model hyperparameters</li>
-<li>Informed model building based on literature research</li>
-</ul>
+<p><strong>Autoencoders</strong>: Knowing that the module leaders have been working on a conditional AE, we come up with and evaluate several possibly related architectures.</p>
+<p><strong>Automatic neural architecture search:</strong> Using a small subset of the data we run Autokeras, an AutoML tool, to quickly test vanilla CNNs, ResNets and Xception networks with different complexities, regularization and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.</p>
+<p><img src="https://camo.githubusercontent.com/5eedb6a5c3303767497912731e006b662bf83490/68747470733a2f2f6175746f6b657261732e636f6d2f696d672f726f775f7265642e737667" width="200" /></p>
+<p><strong>Grid search</strong>: We pick several key hyperparameters of the best model, expand their range and evaluate the effect using a small portion of the data. This allows to significantly reduce the model size while simultaneously maintaining or even improving predictive performance.</p>
+<p><strong>Reproducing from literature:</strong> Informed by a large gap between performance metrics for noiseless and noisy data, we test a two-stage pipeline described in <a href="https://arxiv.org/pdf/1911.03867">Madireddy (2019)</a> that uses a separate denoising network as the first step.</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Manual-Model-Building">Manual Model Building<a class="anchor-link" href="#Manual-Model-Building">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Automatic-Neural-Architecture-Search">Automatic Neural Architecture Search<a class="anchor-link" href="#Automatic-Neural-Architecture-Search">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Grid-Search">Grid Search<a class="anchor-link" href="#Grid-Search">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Models-Based-on-Literature-Research">Models Based on Literature Research<a class="anchor-link" href="#Models-Based-on-Literature-Research">&#182;</a></h1>
 </div>
 </div>
 </div></section></section><section><section>
