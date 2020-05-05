@@ -18078,7 +18078,7 @@ z
 <h1 id="Model-Building">Model Building<a class="anchor-link" href="#Model-Building">&#182;</a></h1><p>In our model building we used multiple approaches:</p>
 <p><strong>Autoencoders</strong>: Knowing that the module leaders have been working on a conditional AE, we come up with and evaluate several possibly related architectures.</p>
 <p><strong>Automatic neural architecture search:</strong> Using a small subset of the data we run Autokeras, an AutoML tool, to quickly test vanilla CNNs, ResNets and Xception networks with different complexities, regularization and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.</p>
-<p><img src="https://camo.githubusercontent.com/5eedb6a5c3303767497912731e006b662bf83490/68747470733a2f2f6175746f6b657261732e636f6d2f696d672f726f775f7265642e737667" width="200" /></p>
+<p><img src="https://autokeras.com/img/row_red.svg" width="200" /></p>
 <p><strong>Grid search</strong>: We pick several key hyperparameters of the best model, expand their range and evaluate the effect using a small portion of the data. This allows to significantly reduce the model size while simultaneously maintaining or even improving predictive performance.</p>
 <p><strong>Reproducing from literature:</strong> Informed by a large gap between performance metrics for noiseless and noisy data, we test a two-stage pipeline described in <a href="https://arxiv.org/pdf/1911.03867">Madireddy (2019)</a> that uses a separate denoising network as the first step.</p>
 
