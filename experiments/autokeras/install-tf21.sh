@@ -11,7 +11,7 @@ python -m ipykernel install --user --name tf21 --display-name "Python (TF2.1)"
 
 # General dependencies
 conda install -c anaconda ipywidgets matplotlib numpy pandas scikit-learn seaborn tensorflow-gpu tqdm
-pip install tensorflow-addons
+pip install tensorflow-addons hiplot
 
 # Autokeras-specific dependencies
 conda install -c conda-forge packaging pyparsing pytz keras-tuner typeguard
