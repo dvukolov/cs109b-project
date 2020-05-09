@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 
-<title>presentation slides</title>
+<title>presentation-version2 slides</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13279,35 +13279,21 @@ a.anchor-link {
 
 </div>
 </div>
-</div><aside class="notes">
-
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Exploratory-Data-Analysis:-Key-Considerations">Exploratory Data Analysis: Key Considerations<a class="anchor-link" href="#Exploratory-Data-Analysis:-Key-Considerations">&#182;</a></h1><p><em>[To be articulated and either not shown or quickly flipped through]</em></p>
-<p>The knowledge of the data-generating procedure, together with the study of the relationship between the parameters and the resulting galaxy images informed our subsequent model building as follows:</p>
-<ul>
-<li>The <strong>Sérsic index</strong> is <strong>very difficult to estimate</strong> making it an important parameter when doing model selection.</li>
-<li>The <strong>target variables</strong> need to be <strong>rescaled</strong> so that the loss is not driven by the variables with the largest magnitude.</li>
-<li>The <strong>simulated images</strong> form a perfect dataset, free of outliers and irregularities, with underlying <strong>deterministic relationships between a handful of parameters</strong>. Smaller neural networks might be capable of capturing the non-linear dependencies in the data, and <strong>regularization might turn out to be optional</strong>.</li>
-<li>The <strong>PSF</strong> and the <strong>noise</strong> levels <strong>have a significant effect</strong> on the obtained images. To understand how dramatic that effect is, we chose to establish an upper bound on model performance by training on the noiseless images first.</li>
-</ul>
-
-</div>
-</div>
-</div>
-</aside></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Modeling-Experiments">Modeling Experiments<a class="anchor-link" href="#Modeling-Experiments">&#182;</a></h1><p><strong>Autoencoders:</strong> An autoencoder has two potential advantages:</p>
+<h1 id="Modeling-Experiments">Modeling Experiments<a class="anchor-link" href="#Modeling-Experiments">&#182;</a></h1><h3 id="Autoencoders">Autoencoders<a class="anchor-link" href="#Autoencoders">&#182;</a></h3><p>An autoencoder has two potential advantages:</p>
 <ul>
 <li>First, an autoencoder can be used not only to predict the labels but also to denoise and reconstruct the images.</li>
 <li>Secondly, an autoencoder is learning from both the labels and is also relying on the clean noiseless images and thereby might incorporate more information.</li>
 </ul>
-<p><strong>Neural architecture search:</strong> <img style="float: right; padding-left: 10px; padding-bottom: 20px;" src="https://autokeras.com/img/row_red.svg" width="200" />Using a small subset of the data we run <a href="https://autokeras.com/">AutoKeras</a>, an AutoML tool, to quickly test vanilla CNNs, ResNets and Xception networks with different complexities, regularization and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.</p>
-<p><strong>Grid search of hyperparameters:</strong> We pick several key hyperparameters of the best model, expand their range and evaluate the effect using a small portion of the data. This allows to significantly reduce the model size, decrease the training time, while simultaneously maintaining predictive performance.</p>
-<p><strong>Denoising pipeline:</strong> Informed by a large gap between performance metrics for noiseless and noisy data, we test a two-stage pipeline described in <a href="https://arxiv.org/pdf/1911.03867">Madireddy (2019)</a> that uses a separate denoising network as the first step.</p>
+<h3 id="Neural-architecture-search">Neural architecture search<a class="anchor-link" href="#Neural-architecture-search">&#182;</a></h3><p><img style="float: right; padding-left: 10px; padding-bottom: 20px;" src="https://autokeras.com/img/row_red.svg" width="200" />Using a small subset of the data we run <a href="https://autokeras.com/">AutoKeras</a>, an AutoML tool, to quickly test vanilla CNNs, ResNets and Xception networks with different complexities, regularization and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.</p>
+<h3 id="Grid-search-of-hyperparameters">Grid search of hyperparameters<a class="anchor-link" href="#Grid-search-of-hyperparameters">&#182;</a></h3><ul>
+<li>We pick several key hyperparameters of the best model, expand their range and evaluate the effect using a small portion of the data. </li>
+<li>This allows to significantly reduce the model size, decrease the training time, while simultaneously maintaining or even improving predictive performance.</li>
+</ul>
+<h3 id="Reproducing-from-literature">Reproducing from literature<a class="anchor-link" href="#Reproducing-from-literature">&#182;</a></h3><p>Informed by a large gap between performance metrics for noiseless and noisy data, we test a two-stage pipeline described in <a href="https://arxiv.org/pdf/1911.03867">Madireddy (2019)</a> that uses a separate denoising network as the first step.</p>
 
 </div>
 </div>
