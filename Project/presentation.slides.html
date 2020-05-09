@@ -13215,21 +13215,6 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Outline">Outline<a class="anchor-link" href="#Outline">&#182;</a></h1><ol>
-<li>Problem Statement</li>
-<li>Data Generation</li>
-<li>Exploratory Data Analysis</li>
-<li>Model Building</li>
-<li>Evaluation</li>
-<li>Future Work</li>
-</ol>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Problem-Statement">Problem Statement<a class="anchor-link" href="#Problem-Statement">&#182;</a></h1><p><strong>Vast amounts of data:</strong> As astronomers collect more and more image data, there is a need for further development of automated, reliable and fast analysis methods.</p>
 <p><strong>Traditional methods:</strong> For example, to describe a galaxy, software is used to fit a parametric or a non-parametric model and estimate the galaxy's brightness, shape, size and orientation. A commonly used, though not a perfect model, is the <a href="https://en.wikipedia.org/wiki/Sersic_profile">Sérsic profile</a>, developed in 1963.</p>
 <p><strong>New methods:</strong> In recent years, researchers have started exploring the application of deep learning methods to analyse astronomical data. For instance, classification of galaxies using CNNs has demonstrated high levels of accuracy. In this work we study the possibility to use neural networks to estimate galaxy parameters from simulated data.</p>
@@ -13240,26 +13225,7 @@ a.anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Data-Generation">Data Generation<a class="anchor-link" href="#Data-Generation">&#182;</a></h1><p>We use <a href="https://github.com/GalSim-developers/GalSim">GalSim</a>, an open source library, to generate the images of galaxies, following these steps:</p>
-<ol>
-<li><strong>Sérsic profile:</strong> Define a galaxy's Sérsic profile parametrized by the Sérsic index and the radius that encloses a half of the total flux</li>
-<li><strong>Flux &amp; shear:</strong> Add flux and shear (defined by ellipticity and orientation) to complete the galaxy definition</li>
-<li><strong>PSF:</strong> Convolve the galaxy profile with the Point Spread Function, which is determined by the telescope optics and the atmosphere (for ground-based telescopes).</li>
-<li><strong>Noise:</strong> Add Poisson noise (e.g. detected photoelectrons) and Gaussian noise (e.g. read noise) to the generated the image</li>
-<li><strong>Signal-to-noise ratio:</strong> Compute the signal-to-noise ratio (SNR) based on the pixel values and the noise level (assuming faint galaxies):
-$$
-SNR = \frac{1}{\sigma_p} \sqrt{\sum p_i^2}
-$$
-We preserve only the images with SNR between 10 and 100.</li>
-</ol>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Data-Generation-(cont.)">Data Generation (cont.)<a class="anchor-link" href="#Data-Generation-(cont.)">&#182;</a></h1><h3 id="Datasets">Datasets<a class="anchor-link" href="#Datasets">&#182;</a></h3><p>We generate three datasets with increasing complexity for parameter estimation</p>
+<h1 id="Data-Generation">Data Generation<a class="anchor-link" href="#Data-Generation">&#182;</a></h1><h3 id="Datasets">Datasets<a class="anchor-link" href="#Datasets">&#182;</a></h3><p>We generate three datasets with increasing complexity for parameter estimation</p>
 <table>
 <thead><tr>
 <th>Dataset</th>
@@ -13313,24 +13279,8 @@ We preserve only the images with SNR between 10 and 100.</li>
 
 </div>
 </div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Exploratory-Data-Analysis:-Key-Learnings">Exploratory Data Analysis: Key Learnings<a class="anchor-link" href="#Exploratory-Data-Analysis:-Key-Learnings">&#182;</a></h1><p><em>[To be rewritten concisely and probably not shown as part of the deck]</em></p>
-<ul>
-<li><strong>Low PSF</strong> means the <strong>light is concentrated</strong> and its easier to spot the galaxy; <strong>as the PSF rises the light is more spread out</strong> and becomes harder to distinguish from the background. PSF is the <strong>function of the telescope lens</strong>.</li>
-<li><strong>Sersic Radius</strong> works in a similar manner to PSF; <strong>low Sersic Radius means concentrated light</strong> and a galaxy that is easier to distinguish from the background noise.</li>
-<li><strong>Sersic Index</strong> gives the <strong>intensity of the galaxy</strong>; the higher the Sersic Index the more intense the light from the galaxy and easier it is to spot it.</li>
-<li><strong>Ellipticity</strong> describes the <strong>shape of the galaxy</strong> i.e. spherical vs elliptical.</li>
-<li><strong>Orientation</strong> describes the <strong>angles</strong> at which the galaxy is oriented in the image.</li>
-<li><strong>Flux</strong> describes the <strong>brightness of the galaxy</strong> - it is easier to spot the shape and location of a galaxy with high flux.</li>
-<li>As the <strong>noise</strong> content of the image increases, the more <strong>blurry</strong> the galaxy's shape becomes.</li>
-</ul>
+</div><aside class="notes">
 
-</div>
-</div>
-</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -13345,34 +13295,19 @@ We preserve only the images with SNR between 10 and 100.</li>
 
 </div>
 </div>
-</div></section></section><section><section>
+</div>
+</aside></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Modeling-Experiments">Modeling Experiments<a class="anchor-link" href="#Modeling-Experiments">&#182;</a></h1><h3 id="Autoencoders">Autoencoders<a class="anchor-link" href="#Autoencoders">&#182;</a></h3><p>An autoencoder has two potential advantages:</p>
+<h1 id="Modeling-Experiments">Modeling Experiments<a class="anchor-link" href="#Modeling-Experiments">&#182;</a></h1><p><strong>Autoencoders:</strong> An autoencoder has two potential advantages:</p>
 <ul>
 <li>First, an autoencoder can be used not only to predict the labels but also to denoise and reconstruct the images.</li>
 <li>Secondly, an autoencoder is learning from both the labels and is also relying on the clean noiseless images and thereby might incorporate more information.</li>
 </ul>
-<p>Furthermore, we take inspiration from the Jun Yin's work with Conditional Autoencoders mentioned during the lectures.</p>
-<ul>
-<li>We experiment with several possibly related architectures.</li>
-<li>We begin by trying to replicate GalSim output through building a decoder first — clean images are a deterministic function of the labels.</li>
-<li>Then we invert the decoder architecture to build a basic encoder structure.</li>
-</ul>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Modeling-Experiments">Modeling Experiments<a class="anchor-link" href="#Modeling-Experiments">&#182;</a></h1><h3 id="Neural-architecture-search">Neural architecture search<a class="anchor-link" href="#Neural-architecture-search">&#182;</a></h3><p><img style="float: right; padding-left: 10px; padding-bottom: 20px;" src="https://autokeras.com/img/row_red.svg" width="200" />Using a small subset of the data we run <a href="https://autokeras.com/">AutoKeras</a>, an AutoML tool, to quickly test vanilla CNNs, ResNets and Xception networks with different complexities, regularization and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.</p>
-<h3 id="Grid-search-of-hyperparameters">Grid search of hyperparameters<a class="anchor-link" href="#Grid-search-of-hyperparameters">&#182;</a></h3><ul>
-<li>We pick several key hyperparameters of the best model, expand their range and evaluate the effect using a small portion of the data. </li>
-<li>This allows to significantly reduce the model size, decrease the training time, while simultaneously maintaining or even improving predictive performance.</li>
-</ul>
-<h3 id="Reproducing-from-literature">Reproducing from literature<a class="anchor-link" href="#Reproducing-from-literature">&#182;</a></h3><p>Informed by a large gap between performance metrics for noiseless and noisy data, we test a two-stage pipeline described in <a href="https://arxiv.org/pdf/1911.03867">Madireddy (2019)</a> that uses a separate denoising network as the first step.</p>
+<p><strong>Neural architecture search:</strong> <img style="float: right; padding-left: 10px; padding-bottom: 20px;" src="https://autokeras.com/img/row_red.svg" width="200" />Using a small subset of the data we run <a href="https://autokeras.com/">AutoKeras</a>, an AutoML tool, to quickly test vanilla CNNs, ResNets and Xception networks with different complexities, regularization and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.</p>
+<p><strong>Grid search of hyperparameters:</strong> We pick several key hyperparameters of the best model, expand their range and evaluate the effect using a small portion of the data. This allows to significantly reduce the model size, decrease the training time, while simultaneously maintaining predictive performance.</p>
+<p><strong>Denoising pipeline:</strong> Informed by a large gap between performance metrics for noiseless and noisy data, we test a two-stage pipeline described in <a href="https://arxiv.org/pdf/1911.03867">Madireddy (2019)</a> that uses a separate denoising network as the first step.</p>
 
 </div>
 </div>
@@ -13418,42 +13353,7 @@ We preserve only the images with SNR between 10 and 100.</li>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Performance-Evaluation:-Image-Generation">Performance Evaluation: Image Generation<a class="anchor-link" href="#Performance-Evaluation:-Image-Generation">&#182;</a></h1><p><img src="graphs/ori-log.png" />
-<img src="graphs/gen-log.png" />
-<img src="graphs/galsim-log.png" /></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Performance-Evaluation:-Image-Generation">Performance Evaluation: Image Generation<a class="anchor-link" href="#Performance-Evaluation:-Image-Generation">&#182;</a></h1><p><img src="graphs/resi-abs.png" />
-<img src="graphs/resi-scl.png" /></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Performance-Evaluation:-Predicted-vs-True">Performance Evaluation: Predicted vs True<a class="anchor-link" href="#Performance-Evaluation:-Predicted-vs-True">&#182;</a></h1><p><img src="graphs/pred.png" style="width: 700px;"/></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Performance-Evaluation:-Error-Distribution">Performance Evaluation: Error Distribution<a class="anchor-link" href="#Performance-Evaluation:-Error-Distribution">&#182;</a></h1><p><img src="graphs/err-dist.png" style="width: 700px;"/></p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Performance-Evaluation:-Error-vs-Label">Performance Evaluation: Error vs Label<a class="anchor-link" href="#Performance-Evaluation:-Error-vs-Label">&#182;</a></h1><p><img src="graphs/err-snr.png" style="width: 700px;"/></p>
 
 </div>
 </div>
