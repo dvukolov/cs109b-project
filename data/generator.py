@@ -75,7 +75,7 @@ def generate_sample(args):
             random.seed(random_seed + counter.value)
             rng = galsim.BaseDeviate(random_seed + counter.value + 1)
 
-        # SF moffat scale radius in arcsec: fixed vs random
+        # PSF Moffat full-width-half-max of the profile: fixed vs random
         if psf_re is None:
             psf_re = random.uniform(0.5, 1)
             random_psf = True
