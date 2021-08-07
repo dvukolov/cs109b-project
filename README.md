@@ -3,6 +3,19 @@ Measuring the shape and brightness of galaxies with neural networks.
 
 Harvard University<br>Class: CS 109B — Advanced Topics in Data Science<br>Project Advisors: [Douglas Finkbeiner](https://scholar.google.com/citations?hl=en&user=boVy0Y0AAAAJ) and Jun Yin<br>Deliverables: [Code Report](https://nbviewer.jupyter.org/github/dvukolov/measure-galaxies/raw/master/Project/final_report.ipynb) and an oral presentation
 
+Table of Contents
+-----------------
+
+* [Summary of Research](#summary-of-research)
+   * [Problem Statement](#problem-statement)
+   * [Data Generation](#data-generation)
+   * [Target Variables](#target-variables)
+   * [Exploratory Data Analysis](#exploratory-data-analysis)
+   * [Model Building](#model-building)
+   * [Evaluation](#evaluation)
+* [Reproducing the Results](#reproducing-the-results)
+* [Key Repository Files](#key-repository-files)
+
 ## Summary of Research
 
 ### Problem Statement
@@ -45,7 +58,7 @@ An autoencoder has two potential advantages:
 
 #### Neural Architecture Search
 
-<img style="float: right; padding-left: 10px; padding-bottom: 20px;" src="https://autokeras.com/img/row_red.svg" width="200" />Using a small subset of the data we run [AutoKeras](https://autokeras.com/), an AutoML tool, to quickly test vanilla CNNs, ResNets, and Xception networks with different complexities, regularization, and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.
+Using a small subset of the data we run [AutoKeras](https://autokeras.com/), an AutoML tool, to quickly test vanilla CNNs, ResNets, and Xception networks with different complexities, regularization, and normalization parameters. The search is guided by Bayesian optimization with Gaussian Processes.
 
 #### Grid Search of Hyperparameters
 We pick several key hyperparameters of the best Xception CNN model, expand their range, and evaluate the effect using a small portion of the data. This allows us to significantly reduce the model size, decrease the training time, while simultaneously maintaining or even improving predictive performance.
