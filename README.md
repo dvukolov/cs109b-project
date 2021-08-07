@@ -37,11 +37,11 @@ Our goal is to estimate the following five parameters from image data, which are
 
 - Sérsic profile: determined by the **Sérsic index** and the **Sérsic radius**
 - Galaxy **flux**
-- Reparameterized **ellipticity and orientation**: $g_1$ and $g_2$
+- Reparameterized **ellipticity and orientation**: g1 and g2
 
 ### Exploratory Data Analysis
 
-As part of the analysis, we created an interactive [web app](https://measure-galaxies.herokuapp.com/) that laid the foundation for understanding the data. We used it throughout our project to study the relationship between galaxy parameters and the resulting images. It also helped us identify which parameter combinations could present a particular issue for the model versus which would be relatively easier to estimate.
+As part of the analysis, we created an interactive web app that laid the foundation for understanding the data. We used it throughout our project to study the relationship between galaxy parameters and the resulting images. Note: it might take about 30 seconds to spin up a [web app](https://measure-galaxies.herokuapp.com/) instance on Heroku.
 
 ![screencast](Project/graphs/screencast.gif)
 
@@ -105,7 +105,7 @@ $ conda env create -f environment.yml
 $ conda activate galaxies
 ```
 
-The interactive web app additionally makes use of Streamlit. A corresponding Dockerfile is provided in the app directory.
+The interactive web app additionally makes use of Streamlit and is deployed on Heroku. A corresponding Dockerfile is provided in the app directory.
 
 ## Key Repository Files
 
