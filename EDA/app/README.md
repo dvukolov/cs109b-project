@@ -1,14 +1,14 @@
 # Installation
 
+With `poetry==1.4.0` or higher installed:
 ```
-pip install streamlit
-conda install -c conda-forge galsim
+poetry install --no-root
 ```
 
 # Running
 
 ```
-streamlit run app.py
+poetry run streamlit run app.py
 ```
 
 Then open the printed URL in your browser.
