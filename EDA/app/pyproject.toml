@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "measure-galaxies"
+version = "0.1.0"
+authors = ["Dmitry Vukolov <you@example.com>"]
+description = ""
+readme = "README.md"
+packages = [{include = "measure_galaxies"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+GalSim = "^2.4.9"
+matplotlib = "^3.7.1"
+streamlit = "^1.24.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
